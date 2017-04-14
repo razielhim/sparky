@@ -1,0 +1,29 @@
+- name: Create install directory for Spark
+  file:
+    path: "{{ spark_home }}"
+    state: directory
+    mode: 0755
+    owner: "{{ spark_user }}"
+
+- name: Download Spark
+  get_url:
+    url: "{{ spark_download_url }}"
+    dest: "/tmp/spark_{{ spark_version }}"
+    force: no
+    mode: 0755
+
+- name: Unzip Spark
+  unarchive:
+    src: "/tmp/spark_{{ spark_version }}"
+    dest: "{{ spark_home }}"
+    remote_src: yes
+    owner: "{{ spark_user }}"
+    extra_opts: ['--strip-components=1']
+
+- name: Add env vars to profile
+  copy:
+    src: env_vars.sh
+    dest: /etc/profile.d/spark.sh
+    owner: root
+    group: root
+    mode: 0755

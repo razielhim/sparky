@@ -1,0 +1,3 @@
+.idea/
+.vagrant*/
+playbooks/roles/spark/files/id_rsa

@@ -1,0 +1,9 @@
+- name: Install scala from repo (not Mac)
+  apt: pkg=scala state=present
+  when: ansible_distribution != 'MacOSX'
+
+- name: Install scala from repo (Mac homebrew)
+  homebrew:
+    name: scala
+    state: present
+  when: ansible_distribution == 'MacOSX'

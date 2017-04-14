@@ -1,0 +1,14 @@
+- name: Update spark env configuration
+  template:
+    src:  spark-env.sh.j2
+    dest: /opt/spark/conf/spark-env.sh
+    owner: spark
+    mode: 0755
+
+- name: Creates Spark log directory
+  file:
+    path: "{{ spark_log_dir }}"
+    state: directory
+    owner: "{{ spark_user }}"
+    group: "{{ spark_user }}"
+    mode: 0755

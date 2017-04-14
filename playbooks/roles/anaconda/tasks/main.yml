@@ -1,0 +1,10 @@
+#wget https://repo.continuum.io/archive/Anaconda2-4.3.1-Linux-x86_64.sh
+#sudo chmod 755 Anaconda2-4.3.1-Linux-x86_64.sh
+#./Anaconda2-4.3.1-Linux-x86_64.sh -b -p /opt/anaconda2
+#
+#- name: Download Anaconda
+#  get_url:
+#    url: "{{ spark_download_url_root }}{{ spark_download_url_file_name }}"
+#    dest: "/tmp/{{ spark_download_url_file_name }}"
+#    force: no
+#    mode: 0755

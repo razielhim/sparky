@@ -1,0 +1,67 @@
+- name: Create Spark user
+  user:
+    name: "{{ spark_user }}"
+    shell: /bin/bash
+    append: yes
+    state: present
+
+- name: Enable passwordless sudo for spark user
+  template:
+    src: spark.sudo.j2
+    dest: "/etc/sudoers.d/{{spark_user}}"
+    mode: 0644
+    owner: root
+    group: root
+    validate: 'visudo -cf %s'
+
+- name: Create Spark user ssh directory
+  file:
+    path: "~{{spark_user}}/.ssh"
+    state: directory
+    owner: "{{spark_user}}"
+    mode: 0755
+
+- name: Configure Spark ssh to auto-accept unknown host keys
+  lineinfile:
+    dest: "~{{spark_user}}/.ssh/config"
+    regexp: "^StrictHostKeyChecking no"
+    line: "StrictHostKeyChecking no"
+    state: present
+    create: yes
+    owner: "{{spark_user}}"
+    mode: 0600
+
+- name: Ensure authorized_keys file exists
+  file:
+    path: "~{{spark_user}}/.ssh/authorized_keys"
+    state: touch
+    owner: "{{spark_user}}"
+    group: spark
+    mode: 0600
+
+- name: Authorized key upload
+  authorized_key:
+    user: "{{ spark_user }}"
+    key: "{{ lookup('file', 'id_rsa.pub') }}"
+    path: "/home/{{spark_user}}/.ssh/authorized_keys"
+    state: present
+    manage_dir: no
+
+- name: Copy SSH Pub key
+  copy:
+    src: "{{item}}"
+    dest: "~{{spark_user}}/.ssh/{{item}}"
+    owner: "{{spark_user}}"
+    mode: 0600
+  with_items:
+    - id_rsa.pub
+  become_user: "{{spark_user}}"
+
+- name: Copy SSH Secret key
+  # private_key_content is defined in id_rsa.yml decrypted file.
+  copy:
+    content: "{{ lookup('file', 'id_rsa') }}"
+    dest: "~spark/.ssh/id_rsa"
+    owner: "{{spark_user}}"
+    mode: 0600
+  become_user: "{{spark_user}}"

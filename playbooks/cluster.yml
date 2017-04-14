@@ -1,0 +1,5 @@
+- hosts: sparkmaster
+  roles:
+    - { role: spark }
+#    - { role: anaconda }
+  become: yes
