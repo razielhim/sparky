@@ -26,3 +26,26 @@
     - oracle-java8-installer
     - ca-certificates
     - oracle-java8-set-default
+
+- name: Install scala from repo
+  apt:
+    pkg: scala
+    state: present
+
+- name: Install daemon package
+  apt:
+    pkg: daemon
+    state: present
+
+- name: Install SSHd
+  apt:
+    name: openssh-server
+    state: present
+
+- name: Disallow root SSH access
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: restart sshd

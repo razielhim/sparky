@@ -21,7 +21,7 @@ Vagrant.configure(2) do |config|
     master.vm.network :forwarded_port, guest: 8888, host: 8888
     master.vm.provider :virtualbox do |vb|
       vb.customize ['modifyvm', :id, '--memory', 7168]
-      vb.customize ['modifyvm', :id, '--cpus', 3]
+      vb.customize ['modifyvm', :id, '--cpus', 4]
     end
   end
 
@@ -36,6 +36,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbooks/cluster.yml"
+    ansible.verbose = "vvv"
   end
 
   # Disable automatic box update checking. If you disable this, then

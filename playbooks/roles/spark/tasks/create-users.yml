@@ -36,7 +36,6 @@
     path: "~{{spark_user}}/.ssh/authorized_keys"
     state: touch
     owner: "{{spark_user}}"
-    group: spark
     mode: 0600
 
 - name: Authorized key upload
@@ -58,7 +57,7 @@
   become_user: "{{spark_user}}"
 
 - name: Copy SSH Secret key
-  # private_key_content is defined in id_rsa.yml decrypted file.
+  # TODO, key is disposable at the minute but store in a vault for prod
   copy:
     content: "{{ lookup('file', 'id_rsa') }}"
     dest: "~spark/.ssh/id_rsa"

@@ -1,7 +1,7 @@
-- include: java-install.yml
-- include: scala-install.yml
-- include: enable-sshd.yml
-- include: spark-create-user.yml
+- include: pkg-install.yml
+- include: create-users.yml
+- include: python-install.yml
 - include: spark-install.yml
 - include: spark-configure.yml
 - include: spark-form-cluster.yml
+- include: jupyter-start.yml

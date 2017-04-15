@@ -5,6 +5,13 @@
     owner: spark
     mode: 0755
 
+- name: Update spark slaves configuration
+  template:
+    src:  slaves.j2
+    dest: /opt/spark/conf/slaves
+    owner: spark
+    mode: 0755
+
 - name: Creates Spark log directory
   file:
     path: "{{ spark_log_dir }}"

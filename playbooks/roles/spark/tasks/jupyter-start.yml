@@ -1,0 +1,6 @@
+
+- name: Run jupyter server
+  shell: "source /opt/pyenv/bin/activate && daemon -- jupyter notebook --ip=0.0.0.0"
+  args:
+    executable: /bin/bash
+  become_user: "{{spark_user}}"

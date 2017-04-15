@@ -12,6 +12,11 @@
     force: no
     mode: 0755
 
+#- name: Check if Spark already exists
+#  stat:
+#    path: "{{ spark_home }}/README.md"
+#  register: spark_home
+
 - name: Unzip Spark
   unarchive:
     src: "/tmp/spark_{{ spark_version }}"
@@ -19,6 +24,7 @@
     remote_src: yes
     owner: "{{ spark_user }}"
     extra_opts: ['--strip-components=1']
+#  when: spark_home.stat.exists == False
 
 - name: Add env vars to profile
   copy:

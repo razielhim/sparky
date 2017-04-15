@@ -1,0 +1,70 @@
+- name: Install Python 2.7.x
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - make
+    - python2.7
+    - python-setuptools
+    - python-dev
+    - python-virtualenv
+    - python-pip
+    - build-essential
+
+- name: Create env directory
+  file:
+    path: /opt/pyenv
+    state: directory
+    owner: "{{spark_user}}"
+    mode: 0775
+
+- name: Check if virtual env exists
+  stat:
+    path: /opt/pyenv/bin/python
+  register: p
+
+- name: Create virtual env
+  shell: virtualenv /opt/pyenv/
+  become: true
+  when: not p.stat.exists
+
+- name: Change susenv ownership
+  file:
+    path: /opt/pyenv/
+    state: directory
+    recurse: yes
+    owner: "{{spark_user}}"
+  become: true
+  when: not p.stat.exists
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    virtualenv: /opt/pyenv
+    extra_args: --upgrade
+  when: not p.stat.exists
+
+- name: pip installs
+  pip:
+    name: "{{item}}"
+    virtualenv: /opt/pyenv
+    state: latest
+  with_items:
+    - jupyter
+  when: not p.stat.exists
+
+- name: Create .jupyter directory
+  file:
+    path: "/home/{{spark_user}}/.jupyter"
+    state: directory
+    owner: "{{spark_user}}"
+    mode: 0775
+  when: not p.stat.exists
+
+- name: Update jupyter conf
+  template:
+    src: jupyter.j2
+    dest: "/home/{{spark_user}}/.jupyter/jupyter_notebook_config.py"
+    owner: "{{spark_user}}"
+    mode: 0755
+  when: not p.stat.exists
